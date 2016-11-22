@@ -14,7 +14,6 @@ namespace riat_l3
         {
 
         }
-
         public void Ping(HttpListenerContext context)
         {
         }
