@@ -9,7 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 
 
-namespace riat_l2
+namespace riat_l3
 {
     class XmlSerializerMy
     {
