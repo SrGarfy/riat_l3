@@ -12,6 +12,7 @@ namespace riat_l3
         {
             var port = Console.ReadLine();
             var server = new Server(port);
+            server.Start();
         }
     }
 }

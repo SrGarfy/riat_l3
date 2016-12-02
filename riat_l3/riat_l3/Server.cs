@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.Reflection;
 
 
 namespace riat_l3
@@ -24,30 +25,23 @@ namespace riat_l3
             listener.Prefixes.Add($"http://127.0.0.1:{port}/GetAnswer/");
             listener.Prefixes.Add($"http://127.0.0.1:{port}/PostInputData/");
             listener.Prefixes.Add($"http://127.0.0.1:{port}/Stop/");
+        }
+
+        public void Start()
+        {
             listener.Start();
-            //todo: уберите логику из конструктора, он должен выделять и инициаолизировать память, и не содержать лоигку
             while (listener.IsListening)
             {
                 var context = listener.GetContext();
-                //todo: замените последоватлеьность вызово на пару строчек, которые вытаскивают метод с помощью рефлексии и вызывают его
-                if (context.Request.RawUrl.Contains("Ping"))
+                var url = context.Request.RawUrl;
+                var method = GetType().GetMethods().FirstOrDefault(x => url.Contains(x.Name));
+                if (method != null)
                 {
-                    Ping(context);
-                }
-                else if (context.Request.RawUrl.Contains("PostInputData"))
-                {
-                    PostInputData(context);
-                }
-                else if (context.Request.RawUrl.Contains("GetAnswer"))
-                {
-                    GetAnswer(context);
-                }
-                else if (context.Request.RawUrl.Contains("Stop"))
-                {
-                    Stop(context);
+                    method.Invoke(this, new object[] {context});
                 }
             }
         }
+
         public void Ping(HttpListenerContext context)
         {
             context.Response.StatusCode = (int)HttpStatusCode.OK;
